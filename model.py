@@ -1,9 +1,10 @@
 from util import *
 import yaml
 import gzip
+from multiprocessing import Pool
+from functools import partial
 
-
-def model_runner(default_param_file,n_replications, chunk_data):
+def model_runner(chunk_data,default_param_file,n_replications):
 
     chunk_num, chunk = chunk_data
 
@@ -13,12 +14,13 @@ def model_runner(default_param_file,n_replications, chunk_data):
     agent_output_file = gzip.open("output/agent_output_{i}.tsv.gz".format(i=chunk_num),"w")
     for i,row in enumerate(chunk):
         if i % 1000 == 0:
-            print i
+            print chunk_num, i
         for replication in range(n_replications):
-            print replication
+            #print replication
             params_dict = default_params_dict.copy()
             params_dict.update(row)
             params_dict['replication_number'] = replication
+            params_dict['run_number'] = int(params_dict['run_number'])
             params_dict['turn_output_file'] = turn_output_file
             params_dict['agent_output_file'] = agent_output_file
             run_single_model(params_dict)
@@ -136,12 +138,12 @@ def run_single_model(params_dict):
                                         P.replication_number]))
 
         if proj_iter > 0 and proj_iter % P.projects_per_decision_period == 0:
-            print proj_iter
+            #print proj_iter
 
             # We'll promote K agents, probabilistically, based on their perceived competence
             perceived_competences = scale_to_probability(np.array([a.competence_perception for a in agents]))
             agents_to_promote = np.random.choice(agents,
-                                                 size=P.num_agents_to_promote,
+                                                 size=int(P.num_agents_to_promote),
                                                  p=perceived_competences,
                                                  replace=False)
 
@@ -172,17 +174,32 @@ def run_single_model(params_dict):
 
 
 
-n_chunks = 2
+n_chunks = 16
 
 experiment_details = yaml.load(open("experiment.yaml"))
 
 experimental_runs = expand_grid(experiment_details)
 experimental_runs = experimental_runs.reset_index().rename(index=str,columns={"index":"run_number"})
 
-experimental_runs.to_csv("output/experiment_details.csv")
+
+experimental_runs.to_csv("output/experiment_details.csv",index=False)
 experimental_runs = [x[1].to_dict() for x in experimental_runs.iterrows()]
 chunked = list(chunks(experimental_runs, int(len(experimental_runs) / n_chunks) + 1))
 chunked = list(enumerate(chunked))
 
+runner_partial = partial(model_runner,
+                         default_param_file="default_params.yaml",
+                         n_replications=5)
 
-model_runner("default_params.yaml",5,chunked[0])
+runner_partial(chunked[0])
+
+#
+# p = Pool(n_chunks)
+#
+# print "N experimental conditions per chunk: ", len(chunked[0][1])
+# print "N total experiments: ", len(chunked[0][1])*5
+#
+
+# res = p.map(runner_partial, chunked)
+# p.close()
+# p.terminate()

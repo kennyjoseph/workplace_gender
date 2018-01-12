@@ -14,7 +14,7 @@ np.set_printoptions(suppress=True)
 
 
 def tsn(x):
-    return "\t".join(['{:.5f}'.format(y) for y in x]) + "\n"
+    return "\t".join([str(y) if type(y) is int else '{:.5f}'.format(y) for y in x]) + "\n"
 
 class Agent:
     # For now, the agent is basically just a container.
