@@ -1,0 +1,71 @@
+##############################################################
+##### Basic Simulation parameters
+##############################################################
+# number of projects to iterate through
+n_projects : 30000
+
+# agent pool size
+agent_size : 750
+
+# Ignore for single runs
+run_number : 1
+replication_number : 1
+
+##############################################################
+###### Agent Parameters
+##############################################################
+
+# likelihood of a new agent being a male
+percent_male : .5
+
+# on average, how competent/likeable are men/women
+competence_mean_men : 0
+competence_mean_women : .1
+
+# std. deviation for competence
+competence_sigma_men : .2
+competence_sigma_women : .2
+
+
+
+##############################################################
+###### Project parameters
+##############################################################
+
+# Poission rate parameter for number of members for project
+# In other words, the average number (+ 1) of agents per project
+# A value of .5 means, on average, there's 1.5 people on each project
+rate_of_project_member_distribution : .5
+
+# project success rate - for now, lets do a binary value, projects either succeed or fail
+project_success_rate : .6
+
+# Do agents gain any competence by completing a project, regardless of its success?
+project_performed_competence_increase_factor : .05
+
+# What percentage of the time is success on a solo project attributed to luck?
+# women's success is more likely to be attributed to luck, men's to skill
+solo_project_attribute_to_luck_rate_men : 0
+solo_project_attribute_to_luck_rate_women : 0.05
+
+# how much does your competence perception change by as the result of a project?
+competence_credit_factor : .1
+
+# what percentage of the credit is distributed to men in a group-based setting for success and failure?
+percent_credit_success_to_men : .6
+percent_credit_failure_to_men : .4
+
+
+
+##############################################################
+##### Promotion and Leaving Parameters
+##############################################################
+
+# The number of projects after which agents are promoted and/or choose to leave the company
+projects_per_decision_period : 200
+
+num_agents_to_promote : 5
+
+num_agents_to_leave : 2
+
+
