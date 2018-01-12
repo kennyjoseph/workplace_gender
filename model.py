@@ -16,6 +16,7 @@ def model_runner(chunk_data,default_param_file,n_replications):
         if i % 1000 == 0:
             print chunk_num, i
         for replication in range(n_replications):
+            print "\t", replication
             #print replication
             params_dict = default_params_dict.copy()
             params_dict.update(row)
@@ -191,15 +192,10 @@ runner_partial = partial(model_runner,
                          default_param_file="default_params.yaml",
                          n_replications=5)
 
-runner_partial(chunked[0])
+print "N experimental conditions per chunk: ", len(chunked[0][1])
+print "N total experiments: ", len(chunked[0][1])*5
 
-#
-# p = Pool(n_chunks)
-#
-# print "N experimental conditions per chunk: ", len(chunked[0][1])
-# print "N total experiments: ", len(chunked[0][1])*5
-#
-
-# res = p.map(runner_partial, chunked)
-# p.close()
-# p.terminate()
+p = Pool(n_chunks)
+res = p.map(runner_partial, chunked)
+p.close()
+p.terminate()

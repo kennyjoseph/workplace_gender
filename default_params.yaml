@@ -5,7 +5,7 @@
 n_projects : 30000
 
 # agent pool size
-agent_size : 750
+agent_size : 400
 
 # Ignore for single runs
 run_number : 1
