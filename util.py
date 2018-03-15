@@ -2,7 +2,6 @@ import functools
 import numpy as np
 import pandas as pd
 from itertools import product
-
 ###### Constants
 MALE = 0
 FEMALE = 1
@@ -16,45 +15,10 @@ np.set_printoptions(suppress=True)
 def tsn(x):
     return "\t".join([str(y) if type(y) is int else '{:.5f}'.format(y) for y in x]) + "\n"
 
-class Agent:
-    # For now, the agent is basically just a container.
-    # It should probably be a bit more than that at some point, but the simulation is
-    # small ehough right now we can keep all the logic in one place
-    def __init__(self,
-                 sex,
-                 competence,
-                 likeability,
-                 time_of_creation,
-                 agent_index):
-        # set the (for now, binary) sex, and the continuous competence/likeability scores
-        self.sex = sex
-        self.competence = competence
-        self.likeability = likeability
-
-        # set others perception of their likeability and competence to the actual values
-        self.competence_perception = self.competence
-        self.likeability_perception = self.likeability
-
-        # Things we'll use to look at outcome variables
-        self.time_of_creation = time_of_creation
-        self.num_successful_projects = 0
-        self.num_failed_projects = 0
-        self.original_competence = competence
-
-        self.index = agent_index
-
-
-    def to_string(self):
-        return tsn([self.sex,self.competence,self.competence_perception,
-                    self.time_of_creation, self.num_successful_projects,
-                    self.num_failed_projects,self.original_competence])
-
-
 
 class ParameterHolder(object):
   def __init__(self, adict):
     self.__dict__.update(adict)
-
 
 
 def scale_to_probability(x):
@@ -72,4 +36,33 @@ def chunks(l, n):
     """Yield successive n-sized chunks from l."""
     for i in xrange(0, len(l), n):
         yield l[i:i + n]
+
+
+def print_stats(P, turn, company_hierarchy):
+
+    # Write out number of men and women at each level
+    for level_iter, level in enumerate(company_hierarchy):
+        n_men = sum([agent.is_male for agent in level])
+        n_women = len(level) - n_men
+        P.turn_output_file.write(tsn([n_men,n_women,turn,level_iter,
+                                     P.run_number,P.replication_number]))
+
+
+    # mean_female_comp_perc = np.mean([a.competence_perception for a in agents if a.sex == FEMALE])
+    # mean_male_comp_perc = np.mean([a.competence_perception for a in agents if a.sex == MALE])
+    # mean_female_competence = np.mean([a.competence for a in agents if a.sex == FEMALE])
+    # mean_male_competence = np.mean([a.competence for a in agents if a.sex == MALE])
+    # n_male = len([a for a in agents if a.sex == MALE])
+    # n_female = len([a for a in agents if a.sex == FEMALE])
+    #
+    # P.turn_output_file.write(tsn([mean_female_comp_perc,
+    #                               mean_male_comp_perc,
+    #                               mean_female_competence,
+    #                               mean_male_competence,
+    #                               n_male, n_female, proj_iter,
+    #                               P.run_number,
+    #                               P.replication_number]))
+
+
+
 

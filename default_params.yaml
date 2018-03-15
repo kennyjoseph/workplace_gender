@@ -2,29 +2,50 @@
 ##### Basic Simulation parameters
 ##############################################################
 # number of projects to iterate through
-n_projects : 30000
-
-# agent pool size
-agent_size : 400
+n_project_cycles : 240
+projects_per_promotion_cycle : 24
 
 # Ignore for single runs
 run_number : 1
 replication_number : 1
 
+# how do agents "decide" to leave?
+leave_function_type : "simple"
+# likelihood of an agent leaving based on hierarchy level
+pct_leave_at_level : [.15,.15,.15,.15,.15,.15,.15,.15]
+
+
+##############################################################
+###### Company Parameters
+##############################################################
+
+# What is the structure of the company?
+hierarchy_sizes : [10,40,75,100,150,200,350,500]
+
+# How are projects assigned?
+project_assignment_method : "equal_solo_group_within_level"
+
+# How are people promoted?
+promotion_model : "top_nonrandom_competence"
+
 ##############################################################
 ###### Agent Parameters
 ##############################################################
 
-# likelihood of a new agent being a male
-percent_male : .5
+# How do we assign sex?
+sex_function_type :  "simple"
+pct_male_at_level : [.5,.5,.5,.5,.5,.5,.5,.5]
+
+# How are we assigning competence scores (w/ what function)?
+competence_function_type : "simple"
 
 # on average, how competent/likeable are men/women
-competence_mean_men : 0
-competence_mean_women : .1
+competence_mean_men : 50
+competence_mean_women : 50
 
 # std. deviation for competence
-competence_sigma_men : .2
-competence_sigma_women : .2
+competence_sigma_men : 10
+competence_sigma_women : 10
 
 
 
@@ -32,40 +53,18 @@ competence_sigma_women : .2
 ###### Project parameters
 ##############################################################
 
-# Poission rate parameter for number of members for project
-# In other words, the average number (+ 1) of agents per project
-# A value of .5 means, on average, there's 1.5 people on each project
-rate_of_project_member_distribution : .5
-
 # project success rate - for now, lets do a binary value, projects either succeed or fail
-project_success_rate : .6
+project_success_rate : .5
 
-# Do agents gain any competence by completing a project, regardless of its success?
-project_performed_competence_increase_factor : .05
+# What proportion of the (male) variance does perceived competence increase by on project success?
+project_competence_percent_variance_boost_men : .05
+project_competence_percent_variance_boost_women : .05
 
-# What percentage of the time is success on a solo project attributed to luck?
-# women's success is more likely to be attributed to luck, men's to skill
-solo_project_attribute_to_luck_rate_men : 0
-solo_project_attribute_to_luck_rate_women : 0.05
+# What proportion of the (male) variance does perceived competence drop by on project failure?
+project_competence_percent_variance_drop_men : .05
+project_competence_percent_variance_drop_women : .05
 
-# how much does your competence perception change by as the result of a project?
-competence_credit_factor : .1
-
-# what percentage of the credit is distributed to men in a group-based setting for success and failure?
-percent_credit_success_to_men : .6
-percent_credit_failure_to_men : .4
-
-
-
-##############################################################
-##### Promotion and Leaving Parameters
-##############################################################
-
-# The number of projects after which agents are promoted and/or choose to leave the company
-projects_per_decision_period : 200
-
-num_agents_to_promote : 5
-
-num_agents_to_leave : 2
-
-
+# What percent of the full boost do women get if they work on a mixed team for project success
+project_women_mixed_group_percent_drop_success : .98
+# What percent of the full drop do women get if they work on a mixed team for project failure
+project_women_mixed_group_percent_increase_failure : 1.02
