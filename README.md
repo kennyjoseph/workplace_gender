@@ -19,9 +19,9 @@ python model.py [path to experiment file] [path to default params file] [path to
 - ```n_cores``` - how many cores you want to use to run the simulation (1 if you're not sure)
 - ```random seed``` - a random seed for the model (using the same seed over and over again should replicate your results)
 
-An example command to run the model:
+An example command to run the model and replicate (I hope) ```R/boost_diff.R```:
 
-```python model.py experiment.yaml default_params.yaml output/ 5 2 0```
+```python model.py experiment.yaml default_params.yaml output 20 4 0```
 
 # Todo
 
