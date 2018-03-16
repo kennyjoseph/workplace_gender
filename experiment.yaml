@@ -4,14 +4,11 @@ competence_mean_women : [50,55]
 competence_mean_men : [50]
 
 project_competence_percent_variance_boost_men : [.05]
-project_competence_percent_variance_boost_women : [.05,.04]
+project_competence_percent_variance_boost_women : [.05,.03]
 
-project_competence_percent_variance_drop_men : [.02]
-project_competence_percent_variance_drop_women : [.02,.03]
+project_competence_percent_variance_drop_men : [.05]
+project_competence_percent_variance_drop_women : [.05]
 
-project_competence_percent_variance_boost_men : [.05]
-project_competence_percent_variance_boost_women : [.05]
-
-project_women_mixed_group_percent_drop_success : [.98,1]
+project_women_mixed_group_percent_drop_success : [1]
 # What percent of the full drop do women get if they work on a mixed team for project failure
-project_women_mixed_group_percent_increase_failure : [1,1.02]
+project_women_mixed_group_percent_increase_failure : [1]

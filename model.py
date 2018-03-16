@@ -121,7 +121,7 @@ def run_single_model(params_dict):
 
 
 
-sys.argv = ['','experiment.yaml','default_params.yaml','output','5','2','0']
+sys.argv = ['','experiment.yaml','default_params.yaml','output','20','4','0']
 if __name__ == "__main__":
 
     if len(sys.argv) != 6:
