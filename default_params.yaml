@@ -44,8 +44,8 @@ competence_mean_men : 50
 competence_mean_women : 50
 
 # std. deviation for competence
-competence_sigma_men : 10
-competence_sigma_women : 10
+competence_sigma_men : 3
+competence_sigma_women : 3
 
 
 
