@@ -26,7 +26,7 @@ hierarchy_sizes : [10,40,75,100,150,200,350,500]
 project_assignment_method : "equal_solo_group_within_level"
 
 # How are people promoted?
-promotion_model : "top_nonrandom_competence"
+promotion_model : "top_nonrandom_promotability"
 
 ##############################################################
 ###### Agent Parameters
@@ -37,15 +37,15 @@ sex_function_type :  "simple"
 pct_male_at_level : [.5,.5,.5,.5,.5,.5,.5,.5]
 
 # How are we assigning competence scores (w/ what function)?
-competence_function_type : "simple"
+promotability_function_type : "simple"
 
 # on average, how competent/likeable are men/women
-competence_mean_men : 50
-competence_mean_women : 50
+promotability_mean_men : 50
+promotability_mean_women : 50
 
 # std. deviation for competence
-competence_sigma_men : 3
-competence_sigma_women : 3
+promotability_sigma_men : 2
+promotability_sigma_women : 2
 
 
 
@@ -53,18 +53,60 @@ competence_sigma_women : 3
 ###### Project parameters
 ##############################################################
 
+
+##############################################################
+################# Project Success/Failure Variables ##########
+##############################################################
 # project success rate - for now, lets do a binary value, projects either succeed or fail
 project_success_rate : .5
 
-# What proportion of the (male) variance does perceived competence increase by on project success?
-project_competence_percent_variance_boost_men : .05
-project_competence_percent_variance_boost_women : .05
+# What is the boost for a successful project?
+project_promotability_boost : 1
+# What percentage of that boost is given to women?
+project_promotability_boost_women_percent_of_men : 1
 
-# What proportion of the (male) variance does perceived competence drop by on project failure?
-project_competence_percent_variance_drop_men : .05
-project_competence_percent_variance_drop_women : .05
+# What is the drop for a failing project?
+project_promotability_drop : 1
+# What is the percentage of that drop for women as compared to men?
+project_promotability_drop_women_percent_of_men : 1
 
+##############################################################
+################# Group Project Variables ##################
+##############################################################
 # What percent of the full boost do women get if they work on a mixed team for project success
-project_women_mixed_group_percent_drop_success : .98
+project_women_mixed_group_percent_drop_success : 1.
 # What percent of the full drop do women get if they work on a mixed team for project failure
-project_women_mixed_group_percent_increase_failure : 1.02
+project_women_mixed_group_percent_increase_failure : 1.
+
+##############################################################
+################# Complain Variables ##################
+##############################################################
+# What percentage of women on team projects complain when they get less credit?
+project_women_percent_complain_on_mixed_success : 0.
+# What percentage of credit do you get after a complaint?
+project_women_additional_promotability_percent_drop_on_complain : 0.
+
+##############################################################
+################# Stretch Project Variables ##################
+##############################################################
+# How often do we see a stretch project?
+project_turns_per_stretch : 6000
+# What is the importance multiplier for stretch projects?
+project_promotability_stretch_multiplier : 1.
+# How many successes do men need to be considered for a stretch project
+project_min_men_stretch_project : 1000.
+# How many successes do women need to be considered for a stretch project
+project_min_women_stretch_project : 1000.
+# How much do we multiply these minimums by as the level increases (x * project level)?
+project_stretch_min_level_multiplier : 1.
+
+##############################################################
+################# Stereotype Fit Variables ##################
+##############################################################
+
+# If percentage of men/women at the next level up is lower than this threshold,
+# The bias is multiplied by the multiplier (or the reciprocal of the multiplier, whichever
+# leads to a negative effect)
+project_prototype_percentage_threshold : -1
+project_prototype_boost_bias_multiplier: 1.
+project_prototype_drop_bias_multiplier: 1.

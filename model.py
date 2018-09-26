@@ -6,6 +6,7 @@ from functools import partial
 from random import seed
 import sys
 import os
+import toolz
 
 def model_runner(chunk_data,default_param_file,n_replications, output_folder):
 
@@ -41,12 +42,7 @@ def run_single_model(params_dict):
     P = ParameterHolder(params_dict)
 
     # How is agent competence/likeability determined?
-    agent_competence_fn = competence_function_factory(P)
-    agent_likeability_fn = likeability_function_factory(P)
-
-    # What happens on project success and failure?
-    proj_success_fn = project_function_factory(P,'success')
-    proj_failure_fn = project_function_factory(P,'fail')
+    agent_promotability_fn = promotability_function_factory(P)
 
     # Functions for new agents
     initial_level_sex_fn = sex_function_factory(P, len(P.hierarchy_sizes)-1)
@@ -62,8 +58,7 @@ def run_single_model(params_dict):
     for level, level_size in enumerate(P.hierarchy_sizes):
         sex_fn = sex_function_factory(P, level)
         company_hierarchy.append([Agent(sex_function = sex_fn,
-                                        competence_function=agent_competence_fn,
-                                        likeability_function=agent_likeability_fn,
+                                        promotability_function=agent_promotability_fn,
                                         time_of_creation=0)
                                   for _ in range(level_size)])
 
@@ -75,17 +70,32 @@ def run_single_model(params_dict):
         print_stats(P, turn, company_hierarchy)
 
         # For each hierarchy level
-        for company_level in company_hierarchy:
+        for level_index, company_level in enumerate(company_hierarchy):
+
+            # compute the percentage of women at the level above
+            # for bias adjustments
+            if level_index != len(company_hierarchy)-1:
+                perc_women = (sum([not agent.is_male for agent in company_hierarchy[level_index+1]]) /
+                              float(len(company_hierarchy[level_index+1])))
+            else:
+                perc_women = .5
+            # What happens on project success and failure?
+            proj_success_fn = project_function_factory(P,perc_women, 'success')
+            proj_failure_fn = project_function_factory(P,perc_women, 'fail')
 
             ##### Assign Projects
-            projects = assign_projects(P, company_level)
+            projects = assign_projects(P, company_level, turn, level_index)
 
             #### Carry out the projects
             for project in projects:
                 # Is the project successful? 1 for yes, 0 for no
                 if project.is_successful:
+                    for agent in project.agents:
+                        agent.num_successful_projects += 1
                     proj_success_fn(project)
                 else:
+                    for agent in project.agents:
+                        agent.num_failed_projects += 1
                     proj_failure_fn(project)
 
         # If its a promotion period
@@ -112,12 +122,15 @@ def run_single_model(params_dict):
 
             ### Add new agents to the bottom
             new_agents = [Agent(sex_function = initial_level_sex_fn,
-                                competence_function=agent_competence_fn,
-                                likeability_function=agent_likeability_fn,
+                                promotability_function=agent_promotability_fn,
                                 time_of_creation=turn)
                           for _ in range(P.hierarchy_sizes[-1] - len(company_hierarchy[-1]))]
 
             company_hierarchy[-1] = company_hierarchy[-1] + new_agents
+
+
+sys.argv = ['','experiment.yaml','default_params.yaml','out','50','6','10']
+
 
 
 if __name__ == "__main__":
@@ -141,18 +154,24 @@ if __name__ == "__main__":
     experimental_runs = expand_grid(experiment_details)
     experimental_runs = experimental_runs.reset_index().rename(index=str,columns={"index":"run_number"})
 
+    try:
+        os.mkdir(output_folder)
+    except:
+        print "Not going to overwrite output!"
+        #sys.exit(-1)
+
     experimental_runs.to_csv(os.path.join(output_folder, "experiment_details.csv"),index=False)
     experimental_runs = [x[1].to_dict() for x in experimental_runs.iterrows()]
-    chunked = list(chunks(experimental_runs, int(len(experimental_runs) / n_cores) + 1))
-    chunked = list(enumerate(chunked))
+    print(int(len(experimental_runs) / n_cores))
+    chunked = list(enumerate(chunkify(experimental_runs, n_cores)))
 
     runner_partial = partial(model_runner,
                              default_param_file=default_params_file,
                              n_replications=n_replications,
                              output_folder=output_folder)
 
-    print "N experimental conditions per chunk: ", len(chunked[0][1])
-    print "N total experiments: ", len(chunked[0][1])*n_replications
+    print "N experimental conditions per chunk: ", [len(x[1]) for x in chunked]
+    print "N total experiments: ", len(experimental_runs)
 
     if n_cores > 1:
         p = Pool(n_cores)

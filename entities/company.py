@@ -4,13 +4,13 @@ from random import shuffle
 
 # PROMOTION
 def promotion_function_factory(P):
-    if P.promotion_model == "top_nonrandom_competence":
-        return get_top_k_by_competence
+    if P.promotion_model == "top_nonrandom_promotability":
+        return get_top_k_by_promotability
 
 
-def get_top_k_by_competence(hire_from, n_to_hire):
+def get_top_k_by_promotability(hire_from, n_to_hire):
     hf = sorted(hire_from,
-                key=lambda x: x.competence_perception,
+                key=lambda x: x.promotability_perception,
                 reverse=True)
     return hf[:n_to_hire], hf[n_to_hire:]
 

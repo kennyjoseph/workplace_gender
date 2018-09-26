@@ -1,14 +1,37 @@
 # MAKE SURE THESE ARE ALL LISTS OR THE CODE BREAKS ... sorry
 
-competence_mean_women : [50,55]
-competence_mean_men : [50]
+#promotability_mean_women : [50]
+#promotability_mean_men : [50]
 
-project_competence_percent_variance_boost_men : [.05]
-project_competence_percent_variance_boost_women : [.05,.03]
+#project_promotability_boost : [1.]
+project_promotability_boost_women_percent_of_men : [.98] #[.95,.98,1.]
 
-project_competence_percent_variance_drop_men : [.05]
-project_competence_percent_variance_drop_women : [.05]
+#project_promotability_drop : [1.]
+project_promotability_drop_women_percent_of_men : [1.02] #[1.,1.02,1.05]
 
-project_women_mixed_group_percent_drop_success : [1]
+# What percent of the full boost do women get if they work on a mixed team for project success
+project_women_mixed_group_percent_drop_success : [.98] # [.95, .98, 1.]
 # What percent of the full drop do women get if they work on a mixed team for project failure
-project_women_mixed_group_percent_increase_failure : [1]
+project_women_mixed_group_percent_increase_failure : [1.02] # [1., 1.02, 1.05]
+
+# What percentage of women on team projects complain when they get less credit?
+project_women_percent_complain_on_mixed_success : [.1] # [.02,.1,.5]
+# What percentage of credit do you get after a complaint?
+project_women_additional_promotability_percent_drop_on_complain : [.75] # [.98,.5,0.]
+
+
+# How often is there a stretch project
+project_turns_per_stretch : [6]
+# What is the importance multiplier for stretch projects?
+project_promotability_stretch_multiplier : [5.] # [2.,5.]
+# How many successes do men need to be considered for a stretch project
+project_min_men_stretch_project : [1.] # [0,1]
+# How many successes do women need to be considered for a stretch project
+project_min_women_stretch_project : [3.] # [1,3]
+# How much do we multiply these minimums by as the level increases (x * project level)?
+project_stretch_min_level_multiplier : [.1] #  [.25]
+
+# Prototype fit variables
+project_prototype_percentage_threshold : [.2] # [.1,.25]
+project_prototype_boost_bias_multiplier: [2] # [2,5]
+project_prototype_drop_bias_multiplier:  [2] # [2,5]

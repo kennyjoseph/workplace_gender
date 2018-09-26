@@ -8,32 +8,29 @@ class Agent:
     # small ehough right now we can keep all the logic in one place
     def __init__(self,
                  sex_function,
-                 competence_function,
-                 likeability_function,
+                 promotability_function,
                  time_of_creation):
-        # set the (for now, binary) sex, and the continuous competence/likeability scores
+        # set the (for now, binary) sex, and the continuous promotability score
         self.sex = sex_function()
         if self.sex == MALE:
             self.is_male = True
         else:
             self.is_male = False
-        self.competence = competence_function(self)
-        self.likeability = likeability_function(self)
+        self.promotability = promotability_function(self)
 
-        # set others perception of their likeability and competence to the actual values
-        self.competence_perception = self.competence
-        self.likeability_perception = self.likeability
+        # set others perception of their promotability to the actual values
+        self.promotability_perception = self.promotability
 
         # Things we'll use to look at outcome variables
         self.time_of_creation = time_of_creation
         self.num_successful_projects = 0
         self.num_failed_projects = 0
-        self.original_competence = self.competence
+        self.original_promotability = self.promotability
 
     def to_string(self):
-        return tsn([self.sex,self.competence,self.competence_perception,
+        return tsn([self.sex,self.promotability,self.promotability,
                     self.time_of_creation, self.num_successful_projects,
-                    self.num_failed_projects,self.original_competence])
+                    self.num_failed_projects,self.original_promotability])
 
 
 #### Sex functions #####
@@ -44,24 +41,17 @@ def sex_function_factory(P, level):
         raise Exception("sex function not implemented")
 
 
-### Competence Functions #####
+### Promotability Functions #####
 
-def competence_function_factory(P):
-    if P.competence_function_type == "simple":
-        return partial(draw_competence,
-                          mean_men = P.competence_mean_men,
-                          mean_women = P.competence_mean_women,
-                          sigma_men = P.competence_sigma_men,
-                          sigma_women = P.competence_sigma_women)
+def promotability_function_factory(P):
+    if P.promotability_function_type == "simple":
+        return partial(draw_promotability,
+                          mean_men = P.promotability_mean_men,
+                          mean_women = P.promotability_mean_women,
+                          sigma_men = P.promotability_sigma_men,
+                          sigma_women = P.promotability_sigma_women)
 
-def draw_competence(agent, mean_men, mean_women, sigma_men, sigma_women):
-    competence_mean = (mean_men if agent.is_male else mean_women)
-    competence_sigma = (sigma_men if agent.is_male else sigma_women)
-    return np.random.normal(competence_mean, competence_sigma)
-
-
-def likeability_function_factory(P):
-    return draw_likeability
-
-def draw_likeability(agent):
-    return -1
+def draw_promotability(agent, mean_men, mean_women, sigma_men, sigma_women):
+    promotability_mean = (mean_men if agent.is_male else mean_women)
+    promotability_sigma = (sigma_men if agent.is_male else sigma_women)
+    return np.random.normal(promotability_mean, promotability_sigma)
