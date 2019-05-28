@@ -9,7 +9,10 @@ class Agent:
     def __init__(self,
                  sex_function,
                  promotability_function,
-                 time_of_creation):
+                 time_of_creation,
+                 id):
+
+        self.id = id
         # set the (for now, binary) sex, and the continuous promotability score
         self.sex = sex_function()
         if self.sex == MALE:

@@ -4,17 +4,20 @@ library(ggplot2)
 library(scales)
 library(Hmisc)
 theme_set(theme_bw(20))
-sim_res <- rbind(fread("../out/turn_output_0.tsv"),
-                 fread("../out/turn_output_1.tsv"),
-                 fread("../out/turn_output_2.tsv"),
-                 fread("../out/turn_output_3.tsv"),
-                 fread("../out/turn_output_4.tsv"),
-                 fread("../out/turn_output_5.tsv"))
+sim_res <- rbind(fread("../out2/turn_output_0.tsv"),
+                 fread("../out2/turn_output_1.tsv"),
+                 fread("../out2/turn_output_2.tsv"),
+                 fread("../out2/turn_output_3.tsv"),
+                 fread("../out2/turn_output_4.tsv"),
+                 fread("../out2/turn_output_5.tsv"))
 
-sim_res <- fread("../out/turn_output_0.tsv")
+#sim_res <- fread("../out/turn_output_0.tsv")
 
-setnames(sim_res, c("n_men","n_women","turn","level_iter","run_number","replication_number"))
-params <- fread("../out/experiment_details.csv")
+
+setnames(sim_res, c("fem_prom", "fem_suc", "fem_fail",
+                    "male_prom","male_suc","male_fail",
+                    "n_men","n_women","turn","level_iter","run_number","replication_number"))
+params <- fread("../out2/experiment_details.csv")
 sim_res <- merge(sim_res,params, by="run_number")
 sim_res <- sim_res[turn %% 24 == 0]
 sim_res$turn <- sim_res$turn / 24 + 1

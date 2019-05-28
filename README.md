@@ -19,9 +19,14 @@ python model.py [path to experiment file] [path to default params file] [path to
 - ```n_cores``` - how many cores you want to use to run the simulation (1 if you're not sure)
 - ```random seed``` - a random seed for the model (using the same seed over and over again should replicate your results)
 
-An example command to run the model and replicate (I hope) ```R/boost_diff.R```:
+An example command to run the model and replicate results for the "minimal" condition:
 
-```python model.py experiment.yaml default_params.yaml output 20 4 0```
+```python model.py minimal_nodownward.yaml default_params.yaml minimal 100 1 14260```
+
+Example to replicate minimal with downward causation:
+
+```python model.py minimal.yaml default_params.yaml minimal 100 1 14260```
+
 
 # Todo
 

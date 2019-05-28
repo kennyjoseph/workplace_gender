@@ -36,14 +36,26 @@ def chunkify(lst,n):
     return [lst[i::n] for i in xrange(n)]
 
 
+def gen_stats(agents):
+    st = np.matrix([(a.promotability,
+                     a.num_successful_projects,
+                     a.num_failed_projects) for a in agents])
+    st = st.mean(axis=0).tolist()[0]
+    if len(st) == 3:
+        return st
+    return [-1,-1,-1]
+
 def print_stats(P, turn, company_hierarchy):
 
     # Write out number of men and women at each level
     for level_iter, level in enumerate(company_hierarchy):
         n_men = sum([agent.is_male for agent in level])
         n_women = len(level) - n_men
-        P.turn_output_file.write(tsn([n_men,n_women,turn,level_iter,
-                                     P.run_number,P.replication_number]))
+
+        fem_stats = gen_stats([a for a in level if not a.is_male])
+        male_stats = gen_stats([a for a in level if a.is_male])
+
+        P.turn_output_file.write(tsn(fem_stats + male_stats + [n_men,n_women,turn,level_iter, P.run_number,P.replication_number]))
 
 
     # mean_female_comp_perc = np.mean([a.competence_perception for a in agents if a.sex == FEMALE])

@@ -1,0 +1,32 @@
+project_promotability_boost_women_percent_of_men : [.98]
+
+project_promotability_drop_women_percent_of_men : [1.02]
+# What percent of the full boost do women get if they work on a mixed team for project success
+project_women_mixed_group_percent_drop_success :  [.98]
+# What percent of the full drop do women get if they work on a mixed team for project failure
+project_women_mixed_group_percent_increase_failure : [ 1.02]
+
+# What percentage of women on team projects complain when they get less credit?
+project_women_percent_complain_on_mixed_success : [.02]
+# What percentage of credit do you get after a complaint?
+project_women_additional_promotability_percent_drop_on_complain :  [.98]
+
+
+# How often is there a stretch project
+project_turns_per_stretch : [6]
+
+# What is the importance multiplier for stretch projects?
+project_promotability_stretch_multiplier :  [2.]
+
+# How many successes do men need to be considered for a stretch project
+project_min_men_stretch_project : [1]
+
+# How many successes do women need to be considered for a stretch project
+project_min_women_stretch_project :  [3]
+
+# How much do we multiply these minimums by as the level increases (x * project level)?
+project_stretch_min_level_multiplier :   [.25]
+
+#project_prototype_percentage_threshold : [.2]
+#project_prototype_boost_bias_multiplier: [2]
+#project_prototype_drop_bias_multiplier:  [2]

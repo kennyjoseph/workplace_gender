@@ -130,7 +130,7 @@ def assign_projects(param_holder, company_level, turn, level_index):
         n_agents_to_assign_to = len(company_level) - agent_start_index
         # First half are solo projects
         solo_proj_len = n_agents_to_assign_to / 2
-        solo_proj_len = solo_proj_len + 1 if not n_agents_to_assign_to % 2 else solo_proj_len
+        solo_proj_len = solo_proj_len - 1 if not n_agents_to_assign_to % 2 else solo_proj_len
         projects = [Project(agent=company_level[i]) for i in range(agent_start_index,solo_proj_len)]
 
         # Second half are group projects

@@ -6,7 +6,7 @@ from functools import partial
 from random import seed
 import sys
 import os
-import toolz
+from collections import Counter, defaultdict
 
 def model_runner(chunk_data,default_param_file,n_replications, output_folder):
 
@@ -53,14 +53,20 @@ def run_single_model(params_dict):
     # How agents decide to leave
     leave_function = leave_function_factory(P)
 
+
+    agent_id = 0
     # Initialize the company
     company_hierarchy = []
     for level, level_size in enumerate(P.hierarchy_sizes):
         sex_fn = sex_function_factory(P, level)
-        company_hierarchy.append([Agent(sex_function = sex_fn,
-                                        promotability_function=agent_promotability_fn,
-                                        time_of_creation=0)
-                                  for _ in range(level_size)])
+        l = []
+        for _ in range(level_size):
+            l.append(Agent(sex_function = sex_fn,
+                            promotability_function=agent_promotability_fn,
+                            time_of_creation=0,
+                           id=agent_id))
+            agent_id +=1
+        company_hierarchy.append(l)
 
     # Okay, start the simulation
 
@@ -72,13 +78,11 @@ def run_single_model(params_dict):
         # For each hierarchy level
         for level_index, company_level in enumerate(company_hierarchy):
 
-            # compute the percentage of women at the level above
+            # compute the percentage of women at the level
             # for bias adjustments
-            if level_index != len(company_hierarchy)-1:
-                perc_women = (sum([not agent.is_male for agent in company_hierarchy[level_index+1]]) /
-                              float(len(company_hierarchy[level_index+1])))
-            else:
-                perc_women = .5
+            perc_women = (sum([not agent.is_male for agent in company_level]) /
+                              float(len(company_level)))
+
             # What happens on project success and failure?
             proj_success_fn = project_function_factory(P,perc_women, 'success')
             proj_failure_fn = project_function_factory(P,perc_women, 'fail')
@@ -109,27 +113,37 @@ def run_single_model(params_dict):
                 company_hierarchy[level_iter] = staying_agents
 
             ### Now, promote up, starting at the bottom
-            for level_iter, company_level in enumerate(company_hierarchy[:-1]):
+            for level_iter in range(len(company_hierarchy)-1):
+                company_level = company_hierarchy[level_iter]
                 # find the top K at the level below me
                 hire_from = company_hierarchy[level_iter + 1]
                 agents_to_hire, agents_remaining = promotion_function(hire_from,
                                                                       P.hierarchy_sizes[level_iter]-len(company_level))
+
                 # promote them
                 company_hierarchy[level_iter] = company_level + agents_to_hire
                 # leave the remaining agents
                 company_hierarchy[level_iter + 1] = agents_remaining
 
-
             ### Add new agents to the bottom
-            new_agents = [Agent(sex_function = initial_level_sex_fn,
-                                promotability_function=agent_promotability_fn,
-                                time_of_creation=turn)
-                          for _ in range(P.hierarchy_sizes[-1] - len(company_hierarchy[-1]))]
+            new_agents = []
+            for _ in range(P.hierarchy_sizes[-1] - len(company_hierarchy[-1])):
+                new_agents.append(Agent(sex_function = initial_level_sex_fn,
+                                        promotability_function=agent_promotability_fn,
+                                        time_of_creation=turn,
+                                        id = agent_id))
+                agent_id +=1
 
             company_hierarchy[-1] = company_hierarchy[-1] + new_agents
 
 
-sys.argv = ['','experiment.yaml','default_params.yaml','out','50','6','10']
+sys.argv = ['','minimal_nodownward.yaml',
+            'default_params.yaml',
+            'minimal',
+            '100',
+            '1',
+            '14260']
+
 
 
 
@@ -144,6 +158,7 @@ if __name__ == "__main__":
     experiment_file, default_params_file, output_folder, n_replications, n_cores, rseed = sys.argv[1:]
 
     seed(int(rseed))
+    np.random.seed(int(rseed))
 
     n_replications = int(n_replications)
     n_cores = int(n_cores)

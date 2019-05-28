@@ -2,7 +2,7 @@
 ##### Basic Simulation parameters
 ##############################################################
 # number of projects to iterate through
-n_project_cycles : 240
+n_project_cycles : 480
 projects_per_promotion_cycle : 24
 
 # Ignore for single runs
