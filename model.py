@@ -119,7 +119,6 @@ def run_single_model(params_dict):
                 hire_from = company_hierarchy[level_iter + 1]
                 agents_to_hire, agents_remaining = promotion_function(hire_from,
                                                                       P.hierarchy_sizes[level_iter]-len(company_level))
-
                 # promote them
                 company_hierarchy[level_iter] = company_level + agents_to_hire
                 # leave the remaining agents

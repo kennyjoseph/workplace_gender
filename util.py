@@ -7,9 +7,16 @@ MALE = 0
 FEMALE = 1
 
 # make it more obvious and succinct to draw a single binary variable
-draw_binary = functools.partial(np.random.binomial, n=1)
+draw_binary = functools.partial(np.random.binomial,n=1)
 
 np.set_printoptions(suppress=True)
+
+
+def draw_reward_penalty(is_stretch_project,P):
+    if is_stretch_project:
+        return np.random.normal(P.stretch_project_reward_mean,P.stretch_project_reward_sd)
+    else:
+        return np.random.normal(P.project_reward_mean,P.project_reward_sd)
 
 
 def tsn(x):
@@ -39,11 +46,14 @@ def chunkify(lst,n):
 def gen_stats(agents):
     st = np.matrix([(a.promotability,
                      a.num_successful_projects,
-                     a.num_failed_projects) for a in agents])
+                     a.num_failed_projects,
+                     a.num_promotion_passed,
+                     a.num_unfair_promotion_passed,
+                     a.numBias) for a in agents])
     st = st.mean(axis=0).tolist()[0]
-    if len(st) == 3:
+    if len(st) == 6:
         return st
-    return [-1,-1,-1]
+    return [-1,-1,-1,-1,-1,-1 ]
 
 def print_stats(P, turn, company_hierarchy):
 
@@ -56,6 +66,18 @@ def print_stats(P, turn, company_hierarchy):
         male_stats = gen_stats([a for a in level if a.is_male])
 
         P.turn_output_file.write(tsn(fem_stats + male_stats + [n_men,n_women,turn,level_iter, P.run_number,P.replication_number]))
+        
+        
+def print_leave_stats(P,turn,leaving_agents,level_iter):
+    
+    n_men = sum([agent.is_male for agent in leaving_agents])
+    n_women = len(leaving_agents) - n_men
+    
+    fem_stats = gen_stats([a for a in leaving_agents if not a.is_male])
+    male_stats = gen_stats([a for a in leaving_agents if a.is_male])
+    
+    P.turn_output_leave_file.write(tsn(fem_stats + male_stats + [n_men,n_women,turn,level_iter,P.run_number,P.replication_number]))
+    
 
 
     # mean_female_comp_perc = np.mean([a.competence_perception for a in agents if a.sex == FEMALE])

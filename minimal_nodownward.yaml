@@ -1,19 +1,51 @@
+# intervention parameters
+stretch_intervention: [False]
+stretch_intervention_bar: [1]
+stretch_intervention_start: [0]
+
+stretch_project_biased_assignment: [True]
+stretch_project_biased_bar: [1.2]
+
+promotion_intervention: [False]
+promotion_intervention_bar : [0.7]
+promotion_intervention_span: [[168,240]]
+promotion_intervention_norm: [0.4] # intervention on norm of the company
+
+
+promotability_function_type : ["simple"]
+project_assignment_method : ["equalSoloGroupPromotability"]
+leave_function_type : ["simple"]
+project_bias_type: ["effect_size"] ## change to micro_macro ## or effect_size
+
+
+
+# Variables that are related to calculate effect size of the biases. 
+external_male_at_above_level: [.7]
+# external_male_at_above_level: [.9,.8,.7,.6,.6,.6,.6,.6]
+# external_norm: [0.05,0.04,0.03,0.02,0.02,0.02,0.02,0.02]
+external_norm: [.01]
+weight: [0.5]
+mixed_effect_size: [.01]
+complaint_bias: [.9]
+
 project_promotability_boost_women_percent_of_men : [.98]
 
 project_promotability_drop_women_percent_of_men : [1.02]
 # What percent of the full boost do women get if they work on a mixed team for project success
-project_women_mixed_group_percent_drop_success :  [.98]
+project_women_mixed_group_percent_drop_success :  [1]
 # What percent of the full drop do women get if they work on a mixed team for project failure
-project_women_mixed_group_percent_increase_failure : [ 1.02]
+project_women_mixed_group_percent_increase_failure : [1]
 
 # What percentage of women on team projects complain when they get less credit?
-project_women_percent_complain_on_mixed_success : [.02]
+project_women_percent_complain_on_mixed_success : [0.1]
 # What percentage of credit do you get after a complaint?
-project_women_additional_promotability_percent_drop_on_complain :  [.98]
+project_women_additional_promotability_percent_drop_on_complain :  [1]
 
 
 # How often is there a stretch project
-project_turns_per_stretch : [6]
+project_turns_per_stretch : [5]
+#[10,40,75,100,150,200,350,500]
+stretch_project_percentage : [0.1]
 
 # What is the importance multiplier for stretch projects?
 project_promotability_stretch_multiplier :  [2.]
