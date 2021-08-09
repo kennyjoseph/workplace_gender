@@ -1,5 +1,5 @@
 import numpy as np
-from util import MALE, tsn, draw_binary
+from util import MALE, tsn, draw_binary,draw_reward_penalty
 from functools import partial
 
 class Agent:
@@ -29,7 +29,9 @@ class Agent:
         self.num_successful_projects = 0
         self.num_failed_projects = 0
         self.original_promotability = self.promotability
-
+        self.num_promotion_passed = 0
+        self.num_unfair_promotion_passed = 0
+        self.numBias = 0
     def to_string(self):
         return tsn([self.sex,self.promotability,self.promotability,
                     self.time_of_creation, self.num_successful_projects,
@@ -37,9 +39,16 @@ class Agent:
 
 
 #### Sex functions #####
-def sex_function_factory(P, level):
+def sex_function_factory(P,level,turn):
     if P.sex_function_type == "simple":
-        return partial(draw_binary, p=P.pct_male_at_level[level])
+        if P.promotion_intervention and P.promotion_intervention_span[0]<=turn<=P.promotion_intervention_span[1]:
+            return partial(draw_binary, p=P.promotion_intervention_bar)
+        else:
+            return partial(draw_binary, p=P.pct_female_at_level[level])
+    elif P.sex_function_type == "male":
+        return lambda : 0
+    elif P.sex_function_type == "female":
+        return lambda : 1
     else:
         raise Exception("sex function not implemented")
 
@@ -58,3 +67,5 @@ def draw_promotability(agent, mean_men, mean_women, sigma_men, sigma_women):
     promotability_mean = (mean_men if agent.is_male else mean_women)
     promotability_sigma = (sigma_men if agent.is_male else sigma_women)
     return np.random.normal(promotability_mean, promotability_sigma)
+
+
