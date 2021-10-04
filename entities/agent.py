@@ -32,6 +32,11 @@ class Agent:
         self.num_promotion_passed = 0
         self.num_unfair_promotion_passed = 0
         self.numBias = 0
+        self.promotion_cycle = []
+        self.level_iter = []
+        self.hist_num_successful_projects = []
+        self.hist_num_failed_projects = []
+        self.hist_promotability_perception = []
     def to_string(self):
         return tsn([self.sex,self.promotability,self.promotability,
                     self.time_of_creation, self.num_successful_projects,

@@ -68,6 +68,44 @@ def print_stats(P, turn, company_hierarchy):
         P.turn_output_file.write(tsn(fem_stats + male_stats + [n_men,n_women,turn,level_iter, P.run_number,P.replication_number]))
         
         
+def print_stats_promotion(P, turn, company_hierarchy,men_leave,women_leave,men_promoted,women_promoted,bias_each_level):
+
+    # Write out number of men and women at each level
+    for level_iter, level in enumerate(company_hierarchy):
+        n_men = sum([agent.is_male for agent in level])
+        n_women = len(level) - n_men
+        P.turn_output_promotion_file.write(tsn([n_men,n_women,men_leave[level_iter],women_leave[level_iter],men_promoted[level_iter],women_promoted[level_iter],turn,level_iter, P.run_number,P.replication_number,bias_each_level[level_iter]] ))
+        
+
+def print_agents(P,company_hierarchy):
+    
+    for level_iter,level in enumerate(company_hierarchy):
+        for agent in level:
+            for index in range(len(agent.promotion_cycle)):
+                P.turn_output_agent_file.write(tsn([ \
+                agent.id,\
+                agent.promotion_cycle[index],\
+                agent.hist_promotability_perception[index],\
+                agent.hist_num_successful_projects[index],\
+                agent.hist_num_failed_projects[index],\
+                agent.level_iter[index],
+                agent.is_male]))
+                
+def print_agents_each_turn(P,company_hierarchy,promotion_cycle):
+    
+    for level_iter,level in enumerate(company_hierarchy):
+        for agent in level:
+            P.turn_output_agent_file.write(tsn([ \
+            agent.id,\
+            promotion_cycle,\
+            agent.promotability_perception,\
+            agent.num_successful_projects,\
+            agent.num_failed_projects,\
+            level_iter,
+            agent.is_male]))
+    
+        
+        
 def print_leave_stats(P,turn,leaving_agents,level_iter):
     
     n_men = sum([agent.is_male for agent in leaving_agents])
