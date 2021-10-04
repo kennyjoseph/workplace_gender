@@ -17,6 +17,9 @@ def draw_reward_penalty(is_stretch_project,P):
         return np.random.normal(P.stretch_project_reward_mean,P.stretch_project_reward_sd)
     else:
         return np.random.normal(P.project_reward_mean,P.project_reward_sd)
+    
+def calculate_d(x):
+    return math.sqrt(4 * x / (1-x))
 
 
 def tsn(x):
